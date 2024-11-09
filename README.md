@@ -17,7 +17,11 @@ We decided to go with the AdonisJS Lucid, to install:
 
 After the npm command you will be promted with the database client. For our purpose we chose **PostgreSQL**. After this, to save time creating models, migrations, seeders we use following commands
 
+```
 `node ace make:model User`
+`node ace make:migration User`
+`node ace make:seeder User`
+```
 
 If we want a migration to be created simultaniously, following up the statement with:
 ` -m`
