@@ -106,3 +106,13 @@ services:
         env_file:
             - .env
 ```
+One last change before running docker-compose up
+Go to **.env** and change HOST=localhost to HOST=0.0.0.0
+After this:
+```
+cd project
+docker-compose up
+```
+
+Try accessing localhost:3333 in your browser. Output should be
+"It works!"
