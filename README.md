@@ -100,9 +100,9 @@ services:
         restart: always
         build:
             context: .
-            tagret: dependencies
+            dockerfile: Dockerfile
         ports:
-            - 3333:3333
+            - "3333:3333"
         env_file:
             - .env
 ```
