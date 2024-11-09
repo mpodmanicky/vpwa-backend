@@ -82,7 +82,27 @@ This creates Dockerfile and docker-compose.yml in our repository.
 
 #### Docker file example
 ```
+FROM node:lts
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 3333
+
+CMD ["npm", "run", "dev"]
 ```
 #### docker-compose example
 ```
+version: '3.8'
+
+services:
+    adonis_app:
+        container_name: adonis_app
+        restart: always
+        build:
+            context: .
+            tagret: dependencies
+        ports:
+            - 3333:3333
+        env_file:
+            - .env
 ```
