@@ -55,3 +55,34 @@ project/
     ...
         
 ```
+### One file setup
+Now after our DB is setup we can start moving our frontend to the project.
+Our frontend code is supposed to be within **project/resources**. So in order to do this, we update the project.
+In terminal: 
+```
+cd project
+mkdir resources
+cd resources
+mkdir views js css fonts images
+```
+### Two file setup
+Now that DB and backend is setup, we keep frontend and backend in separate repositories.
+Dockerizing the backend with *docker-compose.yml* and running the frontend connection to the backend.
+
+#### Setting up docker-compose
+To setup docker-compose for our adonisjs project we have to create Dockerfile and docker-compose.yml
+So, in our backend repository.
+Terminal:
+```
+cd project
+touch Dockerfile
+touch docker-compose.yml
+```
+This creates Dockerfile and docker-compose.yml in our repository.
+
+#### Docker file example
+```
+```
+#### docker-compose example
+```
+```
