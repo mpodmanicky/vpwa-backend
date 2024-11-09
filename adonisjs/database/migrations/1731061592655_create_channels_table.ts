@@ -13,7 +13,10 @@ export default class extends BaseSchema {
         existingType: false,
         schemaName: 'public',
       }).notNullable()
-      table.foreign('user_id').references('user.id')
+      // reference to the user who is the owner of the channel
+      table.integer('owner_id').references('user.id').onDelete('CASCADE')
+      // reference to the messages that belongTo the channel
+      table.integer('message_id').references('messages.id').onDelete('CASCADE')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

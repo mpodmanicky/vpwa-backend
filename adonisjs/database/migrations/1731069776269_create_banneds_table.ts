@@ -5,9 +5,10 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.foreign('user_id').references('users.id')
-      table.foreign('channel_id').references('channels.id')
-
+      table.increments('id').primary()
+      table.integer('user_id').references('users.id')
+      table.integer('channel_id').references('channels.id')
+      table.unique(['user_id', 'skill_id'])
     })
   }
 
