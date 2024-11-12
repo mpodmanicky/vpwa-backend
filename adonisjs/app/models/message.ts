@@ -6,10 +6,10 @@ export default class Message extends BaseModel {
   declare id: number
 
   @column()
-  declare message_text: string
+  declare message_data: string
 
   @column()
-  declare user_id: string
+  declare user_id: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

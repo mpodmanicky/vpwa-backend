@@ -1,9 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import Message from '#models/message'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
   @column()
   declare name: string
 
@@ -17,10 +20,10 @@ export default class User extends BaseModel {
   declare password: string
 
   @column()
-  declare notification_status: string
-
-  @column()
   declare visibility_status: string
+
+  @hasMany(() => Message)
+  declare messages: HasMany<typeof Message>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
