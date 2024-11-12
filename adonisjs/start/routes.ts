@@ -8,6 +8,8 @@
 */
 
 import router from '@adonisjs/core/services/router'
+import db from '@adonisjs/lucid/services/db'
+import User from '#models/user'
 
 router.get('/', async () => 'It works!')
 

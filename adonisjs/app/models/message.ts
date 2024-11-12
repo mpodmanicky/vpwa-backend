@@ -5,6 +5,15 @@ export default class Message extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
+  @column()
+  declare message_text: string
+
+  @column()
+  declare user_id: number
+
+  @column()
+  declare channel_id: number
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

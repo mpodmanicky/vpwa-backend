@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-import { EnumType } from 'typescript'
+
 
 export default class Channel extends BaseModel {
   @column({ isPrimary: true })
@@ -10,8 +10,10 @@ export default class Channel extends BaseModel {
   declare name: string
 
   @column()
-  declare visibility_status:
+  declare visibility_status: string
 
+  @column()
+  declare owner_id: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
