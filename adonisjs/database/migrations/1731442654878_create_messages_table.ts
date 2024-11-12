@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.text('message_data')
       table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
+      table.integer('channel_id').unsigned().references('channels.id').onDelete('CASCADE')
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
+import Message from '#models/message'
 
 export default class Channel extends BaseModel {
   @column({ isPrimary: true })
@@ -10,6 +12,9 @@ export default class Channel extends BaseModel {
 
   @column()
   declare owner_id: number
+
+  @hasMany(() => Message)
+  declare messages: HasMany<typeof Message>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
