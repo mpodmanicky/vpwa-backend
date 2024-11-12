@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.integer('user_id').references('users.id')
       table.integer('channel_id').references('channels.id')
-      table.unique(['user_id', 'skill_id'])
+      table.unique(['user_id', 'channel_id'])
     })
   }
 
