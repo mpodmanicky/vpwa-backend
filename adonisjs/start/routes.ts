@@ -10,6 +10,7 @@
 import router from '@adonisjs/core/services/router'
 import db from '@adonisjs/lucid/services/db'
 import User from '#models/user'
+import Channel from '#models/channel'
 
 router.get('/', async () => 'It works!')
 
@@ -23,16 +24,16 @@ router.get('/', async () => 'It works!')
 router.post('/registerUser', async ({ request, response }) => {
   const user = new User()
   const credentials = request.only(['name', 'username', 'email', 'password', 'repassword'])
-
-  const checkUsername = await User.find('username', credentials.username)
+  const checkUsername = await User.findBy('username', credentials.username)
   if (checkUsername === null) {
-    const checkEmail = await User.find('email', credentials.email)
+    const checkEmail = await User.findBy('email', credentials.email)
     if (checkEmail === null) {
       if (credentials.password === credentials.repassword) {
         user.name = credentials.name
         user.username = credentials.username
         user.email = credentials.email
         user.password = credentials.password
+        user.visibility_status = 'online'
 
         await user.save()
 
@@ -51,8 +52,8 @@ router.post('/registerUser', async ({ request, response }) => {
     response.status(400).send({ message: 'Username' })
   }
 
-  console.log(request.body())
-  response.status(200).send({ email: credentials.email, password: credentials.password })
+  //console.log(request.body())
+  //response.status(200).send({ email: credentials.email, password: credentials.password })
 })
 /*
  * response message: (password, email)
@@ -73,6 +74,65 @@ router.post('/loginUser', async ({ request, response }) => {
   } else {
     response.status(400).send({ message: 'Email' })
   }
-  console.log(request.body())
-  response.status(200).send({ email: credentials.email, password: credentials.password })
+})
+
+router.post('/createChannel', async ({ request, response }) => {
+  const credentials = request.only(['username', 'name', 'visibility'])
+
+  const channel = await Channel.findBy('name', credentials.name)
+  if (!channel) {
+    const user = await User.findBy('username', credentials.username)
+    const newChannel = new Channel()
+    newChannel.name = credentials.name
+    // user cannot be null while creating channel, it can only be done whilst logged in
+    newChannel.owner_id = user.id
+
+    await newChannel.save()
+
+    await newChannel.related('users').attach([user.id])
+
+    if (newChannel.$isPersisted) {
+      response.status(200).send({ channel: newChannel.name })
+    } else {
+      response.status(400).send({ message: 'Error' })
+    }
+  } else {
+    response.status(400).send({ message: 'Exist' })
+  }
+})
+
+router.post('/deleteChannel', async ({ request, response }) => {
+  const credentials = request.only(['username', 'name'])
+  const channel = await Channel.findBy('name', credentials.name)
+  await channel.delete()
+
+  response.status(200).send({ message: 'Deleted' })
+})
+
+router.post('/channels', async ({ request, response }) => {
+  console.log('loading channels...')
+  const credentials = request.only(['username'])
+  const user = await User.findBy('username', credentials.username)
+  const channels = await user.related('channels').query()
+  if (channels) {
+    response.status(200).send({ channels: channels })
+  } else {
+    response.status(400).send({ message: 'Empty' })
+  }
+})
+
+router.patch('/logout', async({ request, response }) => {
+  const credentials = request.only(['username'])
+  const user = await User.findBy('username', credentials.username)
+  user.visibility_status = 'offline'
+  response.status(200).send({ message: 'Offline' })
+})
+
+router.get('/messages', async({ request, response }) => {
+  const credentials = request.only(['channel'])
+
+  const channel = await Channel.findBy('name', credentials.channel)
+  const messages = await channel.related('messages').query()
+
+  response.status(200).send({ messages: messages })
 })
