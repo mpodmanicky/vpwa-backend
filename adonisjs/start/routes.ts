@@ -109,7 +109,7 @@ router.post('/deleteChannel', async ({ request, response }) => {
   response.status(200).send({ message: 'Deleted' })
 })
 
-router.post('/channels', async ({ request, response }) => {
+router.post('/channel', async ({ request, response }) => {
   console.log('loading channels...')
   const credentials = request.only(['username'])
   const user = await User.findBy('username', credentials.username)
@@ -128,11 +128,14 @@ router.patch('/logout', async({ request, response }) => {
   response.status(200).send({ message: 'Offline' })
 })
 
-router.get('/messages', async({ request, response }) => {
-  const credentials = request.only(['channel'])
+router.get('/users', async ({ request, response }) => {
+  const body = request.only(['channel'])
 
-  const channel = await Channel.findBy('name', credentials.channel)
-  const messages = await channel.related('messages').query()
-
-  response.status(200).send({ messages: messages })
 })
+
+router.post('/join', async ({request, response }) => {
+  const body = request.only(['channelName', 'userName', ])
+})
+
+router.get('/channel', async ({ request, response }) => {})
+

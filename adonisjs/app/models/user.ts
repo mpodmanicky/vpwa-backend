@@ -4,6 +4,12 @@ import Message from '#models/message'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Channel from '#models/channel'
 
+export enum VisibilityStatus {
+  Online = 'online',
+  Offline = 'offline',
+  Away = 'away',
+}
+
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
@@ -21,13 +27,17 @@ export default class User extends BaseModel {
   declare password: string
 
   @column()
-  declare visibility_status: string
+  declare visibility_status: VisibilityStatus
 
   @hasMany(() => Message)
   declare messages: HasMany<typeof Message>
 
   @manyToMany(() => Channel, {
     pivotTable: 'user_channels',
+    localKey: 'id',
+    pivotForeignKey: 'user_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'channel_id',
   })
   declare channels: ManyToMany<typeof Channel>
 

@@ -7,12 +7,14 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('name')
-      table.enu('visibility', ['public', 'private'], {
-        useNative: true,
-        enumName: 'channel_visibility',
-        existingType: false,
-      })
-      table.integer('owner_id')
+      table
+        .enu('visibility', ['public', 'private'], {
+          useNative: true,
+          enumName: 'channel_visibility',
+          existingType: false,
+        })
+        .defaultTo('public')
+      table.integer('owner_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

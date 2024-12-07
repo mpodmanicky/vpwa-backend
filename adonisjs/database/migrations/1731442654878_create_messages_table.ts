@@ -5,10 +5,8 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-      table.text('message_data')
-      //table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
-      //table.integer('channel_id').unsigned().references('channels.id').onDelete('CASCADE')
+      table.increments('id').primary()
+      table.text('message_data').notNullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

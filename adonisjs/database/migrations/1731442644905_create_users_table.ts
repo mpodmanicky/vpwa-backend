@@ -10,11 +10,13 @@ export default class extends BaseSchema {
       table.string('username')
       table.string('email')
       table.string('password')
-      table.enu('visibility_status', ['online', 'offline', 'do not disturb'], {
-        useNative: true,
-        enumName: 'user_visibility_status',
-        existingType: false,
-      })
+      table
+        .enu('visibility_status', ['online', 'offline', 'away'], {
+          useNative: true,
+          enumName: 'user_visibility_status',
+          existingType: false,
+        })
+        .defaultTo('offline')
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
