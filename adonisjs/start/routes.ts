@@ -165,6 +165,25 @@ router.patch('/user', async ({ request, response }) => {
 })
 router.post('/joinChannel', async ({ request, response }) => {
   const body = request.only(['channel', 'username'])
+  const channel = await Channel.findBy('name', body.channel)
+  const user = await User.findBy('username', body.username)
+  if(channel){
+    if(channel.visibility === 'private') {
+      response.status(403).send({ data: 'Channel is private' })
+    } else {
+      // join channel with user
+      response.status(200).send({ data: channel.name })
+    }
+  } else {
+    // create the channel
+    const newChannel = new Channel()
+    newChannel.name = body.channel
+    newChannel.owner_id = user.id
+
+    await newChannel.save()
+
+    await newChannel.related('users').attach([user.id])
+  }
 })
 
-router.get('/channel', async ({ request, response }) => { })
+router.get('/channel', async ({ request, response }) => {})
