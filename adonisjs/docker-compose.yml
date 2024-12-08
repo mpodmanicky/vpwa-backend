@@ -1,11 +1,15 @@
 services:
-  adonis_app:
-    container_name: adonis_app
+  postgres:
+    image: postgres:latest
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/
     ports:
-      - "3333:3333"
-    env_file:
-      - .env
+      - "5433:5432"
+
+volumes:
+  postgres_data:

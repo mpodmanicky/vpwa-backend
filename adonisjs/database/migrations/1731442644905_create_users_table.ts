@@ -14,7 +14,7 @@ export default class extends BaseSchema {
         .enu('visibility_status', ['online', 'offline', 'away'], {
           useNative: true,
           enumName: 'user_visibility_status',
-          existingType: false,
+          existingType: true,
         })
         .defaultTo('offline')
       table.timestamp('created_at')

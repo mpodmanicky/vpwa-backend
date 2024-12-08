@@ -6,8 +6,8 @@ class Ws {
   private booted = false
 
   boot() {
-    if(this.booted){
-      return;
+    if (this.booted) {
+      return
     }
     this.booted = true
     this.io = new Server(server.getNodeServer(), {
