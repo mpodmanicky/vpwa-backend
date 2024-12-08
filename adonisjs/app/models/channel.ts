@@ -17,7 +17,7 @@ export default class Channel extends BaseModel {
   @column()
   declare visibility: string
 
-  @hasMany(() => Message)
+  @hasMany(() => Message, { foreignKey: 'channel_id' })
   declare messages: HasMany<typeof Message>
 
   @manyToMany(() => User, {

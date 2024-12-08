@@ -29,7 +29,7 @@ export default class User extends BaseModel {
   @column()
   declare visibility_status: VisibilityStatus
 
-  @hasMany(() => Message)
+  @hasMany(() => Message, { foreignKey: 'message_id' })
   declare messages: HasMany<typeof Message>
 
   @manyToMany(() => Channel, {

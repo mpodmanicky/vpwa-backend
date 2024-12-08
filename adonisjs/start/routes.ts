@@ -167,12 +167,14 @@ router.post('/joinChannel', async ({ request, response }) => {
   const body = request.only(['channel', 'username'])
   const channel = await Channel.findBy('name', body.channel)
   const user = await User.findBy('username', body.username)
-  if(channel){
-    if(channel.visibility === 'private') {
-      response.status(403).send({ data: 'Channel is private' })
+  if (channel) {
+    if (channel.visibility === 'private') {
+      return response.status(403).send({ data: 'Channel is private' })
     } else {
       // join channel with user
-      response.status(200).send({ data: channel.name })
+      await channel.related('users').attach([user.id])
+      await channel.save()
+      return response.status(200).send({ data: channel.name })
     }
   } else {
     // create the channel
@@ -183,7 +185,35 @@ router.post('/joinChannel', async ({ request, response }) => {
     await newChannel.save()
 
     await newChannel.related('users').attach([user.id])
+    if (newChannel.$isPersisted) {
+      return response.status(200).send({ channel: newChannel.name })
+    } else {
+      return response.status(400).send({ message: 'Error' })
+    }
   }
 })
 
-router.get('/channel', async ({ request, response }) => {})
+router.post('/list', async ({ request, response }) => {
+  const body = request.only(['channel'])
+  const channel = await Channel.findBy('name', body.channel)
+  if (channel) {
+    await channel.load('users')
+    const users = channel.users
+    return response.status(200).send({ users })
+  } else {
+    return response.status(404).send({ message: 'channel does not exist' })
+  }
+})
+
+router.post('/messages', async ({ request, response }) => {
+  const body = request.only(['channel'])
+  const channel = await Channel.findBy('name', body.channel)
+  if (channel) {
+    const messages = await channel.related('messages').query().preload('user')
+    return response
+      .status(200)
+      .send({ messages })
+  } else {
+    return response.status(400).send({ message: 'messages are empty' })
+  }
+})
