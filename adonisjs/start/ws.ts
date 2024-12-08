@@ -18,7 +18,6 @@ app.ready(() => {
     // Sending a message to the backend
     socket.on('send_message', async (data) => {
       const { channel, username, message } = data
-      console.log(message)
       try {
         // Save the message to the database
         const CHANNEL = await Channel.findBy('name', channel)

@@ -10,10 +10,7 @@ export default class extends BaseSchema {
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
-    this.schema.alterTable(this.tableName, (table) => {
-      table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
-      table.integer('channel_id').unsigned().references('channels.id').onDelete('CASCADE')
-    })
+
   }
 
   async down() {
