@@ -9,8 +9,9 @@
 
 import router from '@adonisjs/core/services/router'
 import db from '@adonisjs/lucid/services/db'
-import User from '#models/user'
+import User, { VisibilityStatus } from '#models/user'
 import Channel from '#models/channel'
+import Ws from '#services/Ws'
 router.get('/', async () => 'It works!')
 
 /*
@@ -32,7 +33,7 @@ router.post('/registerUser', async ({ request, response }) => {
         user.username = credentials.username
         user.email = credentials.email
         user.password = credentials.password
-        user.visibility_status = 'online'
+        user.visibility_status = VisibilityStatus.Online
 
         await user.save()
 
@@ -66,7 +67,9 @@ router.post('/loginUser', async ({ request, response }) => {
   const user = await User.findBy('email', credentials.email)
   if (user) {
     if (user.password === credentials.password) {
-      response.status(200).send({ username: user.username, password: user.password })
+      response
+        .status(200)
+        .send({ username: user.username, password: user.password, status: user.visibility_status })
     } else {
       response.status(400).send({ message: 'Password' })
     }
@@ -120,21 +123,48 @@ router.post('/channel', async ({ request, response }) => {
   }
 })
 
-router.patch('/logout', async({ request, response }) => {
+router.patch('/logout', async ({ request, response }) => {
   const credentials = request.only(['username'])
   const user = await User.findBy('username', credentials.username)
-  user.visibility_status = 'offline'
-  response.status(200).send({ message: 'Offline' })
+  if (user) {
+    user.visibility_status = VisibilityStatus.Offline
+    response.status(200).send({ message: 'Offline' })
+  } else {
+    response.status(404).send({ message: 'NOT FOUND' })
+  }
 })
 
 router.get('/users', async ({ request, response }) => {
   const body = request.only(['channel'])
-
 })
 
-router.post('/join', async ({request, response }) => {
-  const body = request.only(['channelName', 'userName', ])
+router.patch('/user', async ({ request, response }) => {
+  const body = request.only(['username', 'status'])
+
+  const user = await User.findBy('username', body.username)
+  if (user) {
+    switch (body.status) {
+      case 'online':
+        user.visibility_status = VisibilityStatus.Online
+        response.status(200).send({ data: VisibilityStatus.Online })
+        break
+      case 'offline':
+        user.visibility_status = VisibilityStatus.Offline
+        response.status(200).send({ data: VisibilityStatus.Offline })
+        break
+      case 'do not disturb':
+        user.visibility_status = VisibilityStatus.Away
+        response.status(200).send({ data: VisibilityStatus.Away })
+        break
+      default:
+        console.log('unknown')
+    }
+  } else {
+    response.status(404).send({ data: 'USER NOT FOUND' })
+  }
+})
+router.post('/joinChannel', async ({ request, response }) => {
+  const body = request.only(['channel', 'username'])
 })
 
-router.get('/channel', async ({ request, response }) => {})
-
+router.get('/channel', async ({ request, response }) => { })
